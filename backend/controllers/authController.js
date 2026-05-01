@@ -47,6 +47,7 @@ exports.signup = async (req, res) => {
       }
     });
   } catch (error) {
+    console.error('AUTH SIGNUP ERROR:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -86,6 +87,7 @@ exports.login = async (req, res) => {
       }
     });
   } catch (error) {
+    console.error('AUTH LOGIN ERROR:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -101,6 +103,7 @@ exports.getProfile = async (req, res) => {
       }
     });
   } catch (error) {
+    console.error('AUTH PROFILE ERROR:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };

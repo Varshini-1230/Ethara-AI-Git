@@ -2,10 +2,8 @@ const mongoose = require('mongoose');
 
 const connectDB = async () => {
   try {
-    // For development, use in-memory database
-    if (process.env.NODE_ENV === 'development' && !process.env.MONGO_URI.includes('mongodb+srv')) {
-      console.log('Using in-memory database for development');
-      return; // Skip connection for in-memory
+    if (!process.env.MONGO_URI) {
+      throw new Error('MONGO_URI is not defined in environment variables');
     }
 
     const conn = await mongoose.connect(process.env.MONGO_URI, {
@@ -15,9 +13,8 @@ const connectDB = async () => {
 
     console.log(`MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
-    console.error('Database connection error:', error.message);
-    console.log('Continuing with in-memory database for development...');
-    // Don't exit process, continue with limited functionality
+    console.error('Database connection error:', error);
+    process.exit(1);
   }
 };
 
