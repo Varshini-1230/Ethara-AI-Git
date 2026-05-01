@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Team Task Manager — Prototype</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;background:#f5f5f0;color:#1a1a1a;height:100vh;display:flex;align-items:center;justify-content:center}
+.app{display:flex;height:660px;width:900px;background:#f0ede8;border-radius:14px;overflow:hidden;border:1px solid #e0ddd8;box-shadow:0 4px 24px rgba(0,0,0,.08)}
+.sb{width:200px;background:#fff;border-right:1px solid #e8e5e0;display:flex;flex-direction:column;flex-shrink:0}
+.sb-logo{padding:14px 16px;font-weight:600;font-size:14px;border-bottom:1px solid #e8e5e0;display:flex;align-items:center;gap:9px}
+.sb-box{width:24px;height:24px;background:#2b7de9;border-radius:6px;color:#fff;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sb-nav{padding:10px 8px;flex:1;overflow-y:auto}
+.ns{font-size:10px;color:#aaa;padding:7px 9px 3px;letter-spacing:.07em;font-weight:500}
+.ni{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;cursor:pointer;font-size:12.5px;color:#666;margin-bottom:2px;transition:background .1s}
+.ni:hover{background:#f5f5f0}
+.ni.on{background:#e8f0fd;color:#1a56c4;font-weight:600}
+.nic{width:14px;height:14px;border-radius:3px;background:currentColor;opacity:.25;flex-shrink:0}
+.ni.on .nic{opacity:1}
+.nc{margin-left:auto;background:#eee;color:#666;font-size:10px;padding:1px 6px;border-radius:10px}
+.ni.on .nc{background:#c7d9fc;color:#1a56c4}
+.sb-user{padding:10px 13px;border-top:1px solid #e8e5e0;display:flex;align-items:center;gap:8px}
+.av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0}
+.av-a{background:#c7d9fc;color:#1a56c4}
+.av-m{background:#d4edda;color:#1e7e34}
+.av-p{background:#fdd5bb;color:#9c3d10}
+.av-r{background:#fde8a0;color:#7a5200}
+.uname{font-size:12px;font-weight:600}
+.urole{font-size:10px;color:#aaa}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.tb{padding:11px 18px;background:#fff;border-bottom:1px solid #e8e5e0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.tb-t{font-size:14px;font-weight:600}
+.tb-s{font-size:11px;color:#999;margin-top:1px}
+.tbr{display:flex;gap:6px;align-items:center}
+.btn{padding:6px 13px;border-radius:8px;border:1px solid #d5d2cd;background:#fff;cursor:pointer;font-size:11.5px;color:#333;font-family:inherit;transition:background .1s}
+.btn:hover{background:#f5f5f0}
+.btP{background:#2b7de9;color:#fff;border-color:#2b7de9}
+.btP:hover{background:#1a68d1}
+.btD{color:#c0392b;border-color:#f5b7b1}
+.btD:hover{background:#fef5f5}
+.cnt{flex:1;overflow-y:auto;padding:14px 18px}
+.stg{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:14px}
+.sc{background:#fff;border-radius:9px;padding:11px 13px;border:1px solid #e8e5e0}
+.scl{font-size:11px;color:#999;margin-bottom:3px}
+.scv{font-size:22px;font-weight:600}
+.vb{color:#1a56c4}.va{color:#b87914}.vg{color:#1e7e34}.vr{color:#c0392b}
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.sl{font-size:12px;font-weight:600;color:#888}
+.card{background:#fff;border:1px solid #e8e5e0;border-radius:12px;overflow:hidden;margin-bottom:12px}
+.tr{display:flex;align-items:center;gap:8px;padding:9px 14px;border-bottom:1px solid #f0ede8}
+.tr:last-child{border-bottom:none}
+.tr:hover{background:#fafaf8}
+.bd{padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600;white-space:nowrap}
+.bt{background:#f0ede8;color:#666}
+.bi{background:#e8f0fd;color:#1a56c4}
+.bd2{background:#d4edda;color:#1e7e34}
+.bo{background:#fef5f5;color:#c0392b}
+.bH{background:#fde9df;color:#9c3d10}
+.bM{background:#fef3cc;color:#7a5200}
+.bL{background:#d4edda;color:#1e7e34}
+.bA{background:#c7d9fc;color:#1a56c4}
+.bMem{background:#d4edda;color:#1e7e34}
+.tt{flex:1;min-width:0}
+.ttm{font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}
+.tts{font-size:10px;color:#aaa;margin-top:1px}
+.pr{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid #f0ede8;cursor:pointer;transition:background .1s}
+.pr:last-child{border-bottom:none}
+.pr:hover{background:#fafaf8}
+.pic{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.pn{flex:1;min-width:0}
+.pnm{font-size:12.5px;font-weight:600}
+.pm{font-size:10.5px;color:#aaa;margin-top:1px}
+.pb{height:4px;background:#f0ede8;border-radius:4px;overflow:hidden;width:70px;flex-shrink:0}
+.pf{height:100%;border-radius:4px}
+.tabs{display:flex;padding:0 18px;background:#fff;border-bottom:1px solid #e8e5e0;flex-shrink:0}
+.tab{padding:8px 12px;font-size:11.5px;cursor:pointer;color:#999;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .1s}
+.tab:hover{color:#333}
+.tab.on{color:#2b7de9;border-bottom-color:#2b7de9;font-weight:600}
+.mr2{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid #f0ede8}
+.mr2:last-child{border-bottom:none}
+.mi{flex:1;min-width:0}
+.mn2{font-size:12.5px;font-weight:600}
+.me{font-size:10.5px;color:#aaa}
+.ntf{display:flex;gap:10px;padding:10px 14px;border-bottom:1px solid #f0ede8}
+.ntf:last-child{border-bottom:none}
+.nd{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:3px}
+.nt{font-size:12.5px}
+.ns2{font-size:10.5px;color:#aaa;margin-top:2px}
+.iform{display:flex;flex-direction:column;gap:9px;padding:13px;border-bottom:1px solid #e8e5e0;background:#fafaf8}
+.fg{display:flex;flex-direction:column;gap:3px}
+.fg label{font-size:11px;color:#888;font-weight:500}
+.fg input,.fg select,.fg textarea{font-size:12px;padding:6px 9px;border-radius:8px;border:1px solid #d5d2cd;background:#fff;color:#1a1a1a;font-family:inherit;width:100%}
+.fg input:focus,.fg select:focus{outline:none;border-color:#2b7de9}
+.fg textarea{resize:none;height:54px}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.auth-w{display:flex;align-items:center;justify-content:center;width:900px;height:660px;background:#f0ede8;border-radius:14px;border:1px solid #e0ddd8}
+.ac{background:#fff;border:1px solid #e8e5e0;border-radius:14px;padding:28px 24px;width:310px}
+.ac h2{font-size:16px;font-weight:700;margin-bottom:3px}
+.sub{font-size:12px;color:#aaa;margin-bottom:18px}
+.rsw{display:flex;gap:6px;margin-bottom:14px}
+.rs{flex:1;padding:6px;border-radius:8px;border:1px solid #d5d2cd;cursor:pointer;font-size:12px;color:#666;font-family:inherit;text-align:center;background:#fff;transition:all .1s}
+.rs.on{background:#e8f0fd;color:#1a56c4;border-color:#7aaef4;font-weight:600}
+.asw{text-align:center;margin-top:12px;font-size:12px;color:#aaa}
+.asw a{color:#2b7de9;cursor:pointer}
+.sel{font-size:11px;padding:4px 7px;border-radius:8px;border:1px solid #d5d2cd;background:#fff;color:#333;font-family:inherit}
+.empty-state{padding:28px;text-align:center;color:#bbb;font-size:12.5px}
+</style>
+</head>
+<body>
+<div id="R"></div>
+<script>
+let API_BASE = 'http://localhost:5000/api';
+let currentUser = null;
+let token = localStorage.getItem('token');
+
+var S={
+  pg:'login',
+  role:'member',
+  tab:0,
+  tf:'all',
+  inf:false,
+  apr:1,
+  ntf:[],
+  projects:[],
+  tasks:[],
+  members:[]
+};
+
+// API helper functions
+async function apiRequest(endpoint, options = {}) {
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers
+    },
+    ...options
+  };
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+
+  try {
+    const response = await fetch(`${API_BASE}${endpoint}`, config);
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'API request failed');
+    }
+
+    return data;
+  } catch (error) {
+    console.error('API Error:', error);
+    alert(error.message);
+    throw error;
+  }
+}
+
+// Authentication functions
+async function loginUser(email, password) {
+  const data = await apiRequest('/auth/login', {
+    method: 'POST',
+    body: JSON.stringify({ email, password })
+  });
+
+  token = data.token;
+  currentUser = data.user;
+  localStorage.setItem('token', token);
+  S.role = currentUser.role;
+  return data;
+}
+
+async function signupUser(name, email, password, role) {
+  const data = await apiRequest('/auth/signup', {
+    method: 'POST',
+    body: JSON.stringify({ name, email, password, role })
+  });
+
+  token = data.token;
+  currentUser = data.user;
+  localStorage.setItem('token', token);
+  S.role = currentUser.role;
+  return data;
+}
+
+function logout() {
+  token = null;
+  currentUser = null;
+  localStorage.removeItem('token');
+  S.pg = 'login';
+  render();
+}
+
+// Data loading functions
+async function loadProjects() {
+  const data = await apiRequest('/projects');
+  S.projects = data.projects.map(p => ({
+    id: p._id,
+    name: p.name,
+    ic: p.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2),
+    bg: ['#e8f0fd', '#d4edda', '#fde8a0', '#fdd5bb'][S.projects.length % 4],
+    fg: ['#1a56c4', '#1e7e34', '#7a5200', '#9c3d10'][S.projects.length % 4],
+    mbrs: p.members.length,
+    desc: p.description,
+    progress: p.progress || 0
+  }));
+}
+
+async function loadTasks() {
+  const data = await apiRequest('/tasks');
+  S.tasks = data.tasks.map(t => ({
+    id: t._id,
+    ti: t.title,
+    pr: t.projectId._id,
+    st: t.status,
+    prio: t.priority,
+    due: t.dueDate ? new Date(t.dueDate).toLocaleDateString() : 'No due date',
+    asgn: t.assignedTo.name,
+    aid: t.assignedTo._id
+  }));
+}
+
+async function loadNotifications() {
+  const data = await apiRequest('/notifications');
+  S.ntf = data.notifications.map(n => ({
+    id: n._id,
+    t: n.message,
+    s: new Date(n.createdAt).toLocaleString(),
+    c: n.type === 'task_completed' ? '#1e7e34' : n.type === 'task_assigned' ? '#b87914' : '#2b7de9',
+    r: n.read
+  }));
+}
+
+async function loadMembers() {
+  const data = await apiRequest('/users');
+  S.members = data.users.map(u => ({
+    id: u._id,
+    nm: u.name,
+    em: u.email,
+    role: u.role,
+    av: u.name.split(' ').map(n => n[0]).join('').toUpperCase(),
+    avc: u.role === 'admin' ? 'av-a' : 'av-m',
+    taskCount: u.taskCount || 0,
+    completedTasks: u.completedTasks || 0
+  }));
+}
+
+async function loadDashboardData() {
+  await Promise.all([loadProjects(), loadTasks(), loadNotifications()]);
+}
+
+function sbd(s){return{in_progress:'<span class="bd bi">In progress</span>',todo:'<span class="bd bt">Todo</span>',done:'<span class="bd bd2">Done</span>',overdue:'<span class="bd bo">Overdue</span>'}[s]||s}
+function pbd(p){return{high:'<span class="bd bH">High</span>',medium:'<span class="bd bM">Med</span>',low:'<span class="bd bL">Low</span>'}[p]||p}
+function amap(id){
+  const member = S.members.find(m => m.id === id);
+  return member ? member.av : '?';
+}
+
+function avclass(id){
+  const member = S.members.find(m => m.id === id);
+  return member ? member.avc : 'av-a';
+}
+
+function sidebar(){
+  if (!currentUser) return '';
+  var isA = currentUser.role === 'admin';
+  var unread = S.ntf.filter(n => !n.r).length;
+  var myT = S.tasks.filter(t => t.aid === currentUser.id && t.st !== 'done').length;
+  var pages = [
+    { id: 'dashboard', lb: 'Dashboard' },
+    { id: 'projects', lb: 'Projects' },
+    { id: 'tasks', lb: 'My tasks', cnt: myT },
+    { id: 'notifications', lb: 'Notifications', cnt: unread }
+  ];
+  if (isA) {
+    pages.push({ id: 'team', lb: 'Team' }, { id: 'settings', lb: 'Settings' });
+  }
+  var rows = pages.map(p => '<div class="ni ' + (S.pg === p.id ? 'on' : '') + '" onclick="go(\'' + p.id + '\')"><div class="nic"></div>' + p.lb + (p.cnt ? '<span class="nc">' + p.cnt + '</span>' : '') + '</div>').join('');
+  var userInitials = currentUser.name.split(' ').map(n => n[0]).join('').toUpperCase();
+  return '<div class="sb"><div class="sb-logo"><div class="sb-box">TM</div>TaskManager</div><div class="sb-nav"><div class="ns">WORKSPACE</div>' + rows + '</div><div class="sb-user"><div class="av ' + (isA ? 'av-a' : 'av-m') + '">' + userInitials + '</div><div><div class="uname">' + currentUser.name + '</div><div class="urole">' + (isA ? 'Admin' : 'Member') + '</div></div></div></div>';
+}
+function shell(tb,tabs,content){return '<div class="app">'+sidebar()+'<div class="main">'+tb+(tabs||'')+'<div class="cnt">'+content+'</div></div></div>'}
+
+function renderLogin(){
+  return '<div class="auth-w"><div class="ac"><h2>Welcome back</h2><div class="sub">Sign in to your workspace</div><div class="rsw"><div class="rs on" onclick="S.role=\'admin\';render()">Admin</div><div class="rs" onclick="S.role=\'member\';render()">Member</div></div><div style="display:flex;flex-direction:column;gap:9px"><div class="fg"><label>Email</label><input id="login-email" type="email" placeholder="you@company.com"/></div><div class="fg"><label>Password</label><input id="login-password" type="password" placeholder="••••••••"/></div></div><button class="btn btP" style="width:100%;margin-top:14px" onclick="handleLogin()">Sign in</button><div class="asw">No account? <a onclick="go(\'signup\')">Sign up</a></div></div></div>'
+}
+function renderSignup(){
+  return '<div class="auth-w"><div class="ac"><h2>Create account</h2><div class="sub">Join your team workspace</div><div style="display:flex;flex-direction:column;gap:9px"><div class="fg"><label>Full name</label><input id="signup-name" placeholder="Your name"/></div><div class="fg"><label>Email</label><input id="signup-email" type="email" placeholder="you@company.com"/></div><div class="fr"><div class="fg"><label>Password</label><input id="signup-password" type="password" placeholder="••••••"/></div><div class="fg"><label>Role</label><select id="signup-role"><option value="member">Member</option><option value="admin">Admin</option></select></div></div></div><button class="btn btP" style="width:100%;margin-top:14px" onclick="handleSignup()">Create account</button><div class="asw">Have account? <a onclick="go(\'login\')">Sign in</a></div></div></div>'
+}
+
+async function renderDashboard(){
+  if (!currentUser) return renderLogin();
+  
+  var isA = currentUser.role === 'admin';
+  
+  // Get stats from API
+  let stats = { total: 0, in_progress: 0, done: 0, overdue: 0 };
+  try {
+    const data = await apiRequest('/tasks/stats/dashboard');
+    stats = data.stats;
+  } catch (e) {
+    // Use local calculation as fallback
+    var t = S.tasks;
+    stats = {
+      total: t.length,
+      in_progress: t.filter(x => x.st === 'in_progress').length,
+      done: t.filter(x => x.st === 'done').length,
+      overdue: t.filter(x => x.st === 'overdue').length
+    };
+  }
+  
+  var prows = S.projects.map(function(p){
+    var pt = S.tasks.filter(x => x.pr === p.id);
+    var pd = pt.filter(x => x.st === 'done').length;
+    var pct = pt.length ? Math.round(pd / pt.length * 100) : 0;
+    return '<div class="pr" onclick="S.apr=\'' + p.id + '\';go(\'tasks\')"><div class="pic" style="background:' + p.bg + ';color:' + p.fg + '">' + p.ic + '</div><div class="pn"><div class="pnm">' + p.name + '</div><div class="pm">' + pt.length + ' tasks &middot; ' + p.mbrs + ' members</div></div><div style="text-align:right"><div style="font-size:10px;color:#aaa;margin-bottom:3px">' + pd + '/' + pt.length + '</div><div class="pb"><div class="pf" style="width:' + pct + '%;background:' + p.fg + '"></div></div></div></div>';
+  }).join('');
+  
+  var recent = S.tasks.slice(0, 5).map(function(x){
+    var pname = S.projects.find(p => p.id === x.pr)?.name || 'Unknown Project';
+    return '<div class="tr"><div class="av ' + avclass(x.aid) + '" style="width:24px;height:24px;font-size:9px">' + amap(x.aid) + '</div><div class="tt"><div class="ttm">' + x.ti + '</div><div class="tts">' + pname + '</div></div>' + pbd(x.prio) + sbd(x.st) + '<span style="font-size:10px;color:#aaa;min-width:40px;text-align:right">' + x.due + '</span></div>';
+  }).join('');
+  
+  var tb = '<div class="tb"><div><div class="tb-t">Dashboard</div><div class="tb-s">Good morning, ' + currentUser.name.split(' ')[0] + '</div></div><div class="tbr">' + (isA ? '<button class="btn btP" onclick="go(\'projects\')">+ New project</button>' : '') + '</div></div>';
+  var cnt = '<div class="stg"><div class="sc"><div class="scl">Total tasks</div><div class="scv vb">' + stats.total + '</div></div><div class="sc"><div class="scl">In progress</div><div class="scv va">' + stats.in_progress + '</div></div><div class="sc"><div class="scl">Completed</div><div class="scv vg">' + stats.done + '</div></div><div class="sc"><div class="scl">Overdue</div><div class="scv vr">' + stats.overdue + '</div></div></div><div class="sh"><span class="sl">Projects</span><a style="font-size:11px;color:#2b7de9;cursor:pointer" onclick="go(\'projects\')">View all</a></div><div class="card">' + prows + '</div><div class="sh"><span class="sl">Recent tasks</span><a style="font-size:11px;color:#2b7de9;cursor:pointer" onclick="go(\'tasks\')">View all</a></div><div class="card">' + recent + '</div>';
+  return shell(tb, null, cnt);
+}
+
+function renderProjects(){
+  var isA=S.role==='admin';
+  var tabHtml='<div class="tabs"><div class="tab '+(S.tab===0?'on':'')+'" onclick="S.tab=0;render()">Projects</div><div class="tab '+(S.tab===1?'on':'')+'" onclick="S.tab=1;render()">Team members</div></div>';
+  var tb='<div class="tb"><div class="tb-t">Projects</div><div class="tbr">'+(isA?'<button class="btn btP" onclick="S.inf=true;S.tab=0;render()">+ New project</button>':'')+'</div></div>';
+  var cnt='';
+  if(S.tab===0){
+    var form=S.inf&&isA?'<div class="iform"><div class="fg"><label>Project name</label><input placeholder="e.g. Q3 Campaign" id="np"/></div><div class="fg"><label>Description</label><input placeholder="Brief description"/></div><div style="display:flex;gap:6px;justify-content:flex-end"><button class="btn" onclick="S.inf=false;render()">Cancel</button><button class="btn btP" onclick="addProj()">Create project</button></div></div>':'';
+    var rows=S.projects.map(function(p){var pt=S.tasks.filter(x=>x.pr===p.id);var pd=pt.filter(x=>x.st==='done').length;var pct=pt.length?Math.round(pd/pt.length*100):0;
+      return '<div class="pr" onclick="S.apr='+p.id+';go(\'tasks\')"><div class="pic" style="background:'+p.bg+';color:'+p.fg+'">'+p.ic+'</div><div class="pn"><div class="pnm">'+p.name+'</div><div class="pm">'+p.desc+'</div></div><div style="text-align:right"><div style="font-size:10px;color:#aaa;margin-bottom:3px">'+pct+'%</div><div class="pb"><div class="pf" style="width:'+pct+'%;background:'+p.fg+'"></div></div></div></div>'}).join('');
+    cnt='<div class="card">'+form+rows+'</div>';
+  }else{
+    var af=isA?'<div class="iform"><div class="fr"><div class="fg"><label>Email address</label><input placeholder="member@company.com"/></div><div class="fg"><label>Role</label><select><option>Member</option><option>Admin</option></select></div></div><div style="display:flex;justify-content:flex-end"><button class="btn btP">Add member</button></div></div>':'';
+    var mrows=S.members.map(function(m){return '<div class="mr2"><div class="av '+m.avc+'">'+m.av+'</div><div class="mi"><div class="mn2">'+m.nm+'</div><div class="me">'+m.em+'</div></div><span class="bd '+(m.role==='admin'?'bA':'bMem')+'">'+m.role+'</span>'+(isA&&m.role!=='admin'?'<button class="btn btD" style="font-size:10px;padding:3px 8px;margin-left:5px">Remove</button>':'')+'</div>'}).join('');
+    cnt='<div class="card">'+af+mrows+'</div>';
+  }
+  return shell(tb,tabHtml,cnt)
+}
+
+async function renderTasks(){
+  if (!currentUser) return renderLogin();
+  
+  var isA = currentUser.role === 'admin';
+  var proj = S.projects.find(p => p.id === S.apr) || S.projects[0];
+  if (!proj) {
+    return shell('<div class="tb"><div class="tb-t">Tasks</div></div>', null, '<div class="empty-state">No projects available</div>');
+  }
+  
+  var ptasks = S.tasks.filter(t => t.pr === proj.id);
+  var filtered = S.tf === 'all' ? ptasks : ptasks.filter(t => t.st === S.tf);
+  
+  // Load members if not loaded
+  if (S.members.length === 0) {
+    await loadMembers();
+  }
+  
+  var tabHtml = '<div class="tabs">' + S.projects.map(p => '<div class="tab ' + (S.apr === p.id ? 'on' : '') + '" onclick="S.apr=\'' + p.id + '\';S.tf=\'all\';go(\'tasks\')">' + p.name + '</div>').join('') + '</div>';
+  var tb = '<div class="tb"><div><div class="tb-t">' + proj.name + '</div><div class="tb-s">' + ptasks.length + ' tasks &middot; ' + proj.mbrs + ' members</div></div><div class="tbr"><select class="sel" onchange="S.tf=this.value;render()"><option value="all" ' + (S.tf === 'all' ? 'selected' : '') + '>All status</option><option value="todo" ' + (S.tf === 'todo' ? 'selected' : '') + '>Todo</option><option value="in_progress" ' + (S.tf === 'in_progress' ? 'selected' : '') + '>In progress</option><option value="done" ' + (S.tf === 'done' ? 'selected' : '') + '>Done</option><option value="overdue" ' + (S.tf === 'overdue' ? 'selected' : '') + '>Overdue</option></select>' + (isA ? '<button class="btn btP" onclick="S.inf=true;render()">+ Add task</button>' : '') + '</div></div>';
+  
+  var assignOptions = S.members.map(m => '<option value="' + m.id + '">' + m.nm + '</option>').join('');
+  var form = S.inf && isA ? '<div class="iform"><div class="fg"><label>Task title</label><input placeholder="What needs to be done?" id="nt"/></div><div class="fr"><div class="fg"><label>Assign to</label><select id="na">' + assignOptions + '</select></div><div class="fg"><label>Priority</label><select id="npr"><option>high</option><option selected>medium</option><option>low</option></select></div></div><div class="fr"><div class="fg"><label>Due date</label><input type="date" id="nd"/></div><div class="fg" style="flex-direction:row;align-items:flex-end;gap:6px"><button class="btn" style="flex:1" onclick="S.inf=false;render()">Cancel</button><button class="btn btP" style="flex:1" onclick="addTask(\'' + proj.id + '\')">Add task</button></div></div></div>' : '';
+  
+  var rows = filtered.length ? filtered.map(function(t){
+    return '<div class="tr"><div class="av ' + avclass(t.aid) + '" style="width:24px;height:24px;font-size:9px">' + amap(t.aid) + '</div><div class="tt"><div class="ttm">' + t.ti + '</div><div class="tts">' + t.asgn + ' &middot; due ' + t.due + '</div></div>' + pbd(t.prio) + '<select class="sel" onchange="upSt(\'' + t.id + '\',this.value)"><option value="todo" ' + (t.st === 'todo' ? 'selected' : '') + '>Todo</option><option value="in_progress" ' + (t.st === 'in_progress' ? 'selected' : '') + '>In progress</option><option value="done" ' + (t.st === 'done' ? 'selected' : '') + '>Done</option></select>' + (isA ? '<button class="btn btD" style="font-size:10px;padding:3px 8px" onclick="delTask(\'' + t.id + '\')">Delete</button>' : '') + '</div>';
+  }).join('') : '<div class="empty-state">No tasks in this filter</div>';
+  
+  return shell(tb, tabHtml, '<div class="card">' + form + rows + '</div>');
+}
+
+function renderTeam(){
+  var isA=S.role==='admin';
+  var tb='<div class="tb"><div class="tb-t">Team</div><div class="tbr">'+(isA?'<button class="btn btP" onclick="S.inf=true;render()">+ Invite member</button>':'')+'</div></div>';
+  var form=S.inf?'<div class="iform"><div class="fr"><div class="fg"><label>Email address</label><input placeholder="member@company.com"/></div><div class="fg"><label>Role</label><select><option>Member</option><option>Admin</option></select></div></div><div style="display:flex;gap:6px;justify-content:flex-end"><button class="btn" onclick="S.inf=false;render()">Cancel</button><button class="btn btP" onclick="S.inf=false;render()">Send invite</button></div></div>':'';
+  var rows=S.members.map(function(m){var aid=m.av==='AK'?'a':m.av==='PS'?'p':'r';var mt=S.tasks.filter(t=>t.aid===aid);var md=mt.filter(t=>t.st==='done').length;
+    return '<div class="mr2" style="align-items:flex-start;padding:12px 14px"><div class="av '+m.avc+'" style="width:32px;height:32px;font-size:11px">'+m.av+'</div><div class="mi"><div class="mn2" style="font-size:13px">'+m.nm+'</div><div class="me">'+m.em+'</div><div style="display:flex;gap:5px;margin-top:5px"><span class="bd '+(m.role==='admin'?'bA':'bMem')+'">'+m.role+'</span><span class="bd bt">'+mt.length+' tasks</span><span class="bd bd2">'+md+' done</span></div></div>'+(m.role!=='admin'&&isA?'<div style="display:flex;gap:5px;margin-left:auto"><button class="btn" style="font-size:10px;padding:4px 9px">Promote</button><button class="btn btD" style="font-size:10px;padding:4px 9px">Remove</button></div>':'<span class="bd bA" style="margin-left:auto">Owner</span>')+'</div>'}).join('');
+  return shell(tb,null,'<div class="card">'+form+rows+'</div>')
+}
+
+function renderNotifications(){
+  var unread=S.ntf.filter(n=>!n.r).length;
+  var tb='<div class="tb"><div><div class="tb-t">Notifications</div>'+(unread?'<div class="tb-s">'+unread+' unread</div>':'')+'</div><div class="tbr"><button class="btn" onclick="S.ntf.forEach(n=>n.r=true);render()">Mark all read</button></div></div>';
+  var rows=S.ntf.map(function(n,i){return '<div class="ntf" style="'+(n.r?'':'background:#fafaf8')+'"><div class="nd" style="background:'+n.c+'"></div><div style="flex:1"><div class="nt">'+n.t+'</div><div class="ns2">'+n.s+'</div></div>'+(n.r?'':'<span class="bd bi" style="flex-shrink:0">New</span>')+'</div>'}).join('');
+  return shell(tb,null,'<div class="card">'+rows+'</div>')
+}
+
+function renderSettings(){
+  var tb='<div class="tb"><div class="tb-t">Settings</div></div>';
+  var cnt='<div class="card" style="margin-bottom:12px"><div style="padding:11px 14px;border-bottom:1px solid #f0ede8;font-size:12.5px;font-weight:600">Profile</div><div style="padding:14px;display:flex;flex-direction:column;gap:9px"><div class="fr"><div class="fg"><label>Full name</label><input value="Arjun Kumar"/></div><div class="fg"><label>Email</label><input value="arjun@company.com"/></div></div><div class="fr"><div class="fg"><label>Current password</label><input type="password" value="••••••••"/></div><div class="fg"><label>New password</label><input type="password" placeholder="Leave blank to keep"/></div></div><div><button class="btn btP">Save changes</button></div></div></div><div class="card"><div style="padding:11px 14px;border-bottom:1px solid #f0ede8;font-size:12.5px;font-weight:600">Workspace</div><div style="padding:14px;display:flex;flex-direction:column;gap:9px"><div class="fr"><div class="fg"><label>Workspace name</label><input value="My Company"/></div><div class="fg"><label>Default role</label><select><option>Member</option><option>Admin</option></select></div></div><div><button class="btn btP">Update workspace</button></div></div><div style="border-top:1px solid #f0ede8;padding:11px 14px;display:flex;align-items:center;justify-content:space-between"><div><div style="font-size:12.5px;font-weight:600;color:#c0392b">Danger zone</div><div style="font-size:10.5px;color:#aaa">Permanently delete workspace and all data</div></div><button class="btn btD">Delete workspace</button></div></div>';
+  return shell(tb,null,cnt)
+}
+
+async function handleLogin() {
+  const email = document.getElementById('login-email').value;
+  const password = document.getElementById('login-password').value;
+  
+  if (!email || !password) {
+    alert('Please fill in all fields');
+    return;
+  }
+  
+  try {
+    await loginUser(email, password);
+    await loadDashboardData();
+    go('dashboard');
+  } catch (error) {
+    // Error already shown by apiRequest
+  }
+}
+
+async function handleSignup() {
+  const name = document.getElementById('signup-name').value;
+  const email = document.getElementById('signup-email').value;
+  const password = document.getElementById('signup-password').value;
+  const role = document.getElementById('signup-role').value;
+  
+  if (!name || !email || !password) {
+    alert('Please fill in all fields');
+    return;
+  }
+  
+  try {
+    await signupUser(name, email, password, role);
+    await loadDashboardData();
+    go('dashboard');
+  } catch (error) {
+    // Error already shown by apiRequest
+  }
+}
+
+async function go(p) {
+  S.pg = p;
+  S.inf = false;
+  S.tab = 0;
+  
+  // Load data based on page
+  if (p === 'dashboard' && currentUser) {
+    await loadDashboardData();
+  } else if (p === 'projects' && currentUser) {
+    await loadProjects();
+    if (currentUser.role === 'admin') {
+      await loadMembers();
+    }
+  } else if (p === 'tasks' && currentUser) {
+    await loadTasks();
+  } else if (p === 'team' && currentUser && currentUser.role === 'admin') {
+    await loadMembers();
+  } else if (p === 'notifications' && currentUser) {
+    await loadNotifications();
+  }
+  
+  render();
+}
+
+function upSt(id, s) {
+  // Update task status via API
+  apiRequest(`/tasks/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify({ status: s })
+  }).then(() => {
+    // Reload tasks
+    loadTasks().then(() => render());
+  }).catch(() => {});
+}
+
+function delTask(id) {
+  if (confirm('Are you sure you want to delete this task?')) {
+    apiRequest(`/tasks/${id}`, {
+      method: 'DELETE'
+    }).then(() => {
+      loadTasks().then(() => render());
+    }).catch(() => {});
+  }
+}
+
+function addTask(pid) {
+  const title = document.getElementById('nt').value.trim();
+  if (!title) return;
+  
+  const assignedTo = document.getElementById('na').value;
+  const priority = document.getElementById('npr').value;
+  const dueDate = document.getElementById('nd').value;
+  
+  apiRequest('/tasks', {
+    method: 'POST',
+    body: JSON.stringify({
+      title,
+      projectId: pid,
+      assignedTo,
+      priority,
+      dueDate: dueDate || undefined
+    })
+  }).then(() => {
+    S.inf = false;
+    loadTasks().then(() => render());
+  }).catch(() => {});
+}
+
+function addProj() {
+  const name = document.getElementById('np').value.trim();
+  if (!name) return;
+  
+  const description = document.querySelector('#np').nextElementSibling.value.trim();
+  
+  apiRequest('/projects', {
+    method: 'POST',
+    body: JSON.stringify({ name, description })
+  }).then(() => {
+    S.inf = false;
+    loadProjects().then(() => render());
+  }).catch(() => {});
+}
+
+function render(){
+  var R=document.getElementById('R');
+  var m={login:renderLogin,signup:renderSignup,dashboard:renderDashboard,projects:renderProjects,tasks:renderTasks,team:renderTeam,notifications:renderNotifications,settings:renderSettings};
+  R.innerHTML=(m[S.pg]||renderLogin)()
+}
+
+// Check if user is already logged in
+if (token) {
+  // Try to get profile to verify token
+  apiRequest('/auth/profile').then(data => {
+    currentUser = data.user;
+    S.role = currentUser.role;
+    loadDashboardData().then(() => {
+      S.pg = 'dashboard';
+      render();
+    });
+  }).catch(() => {
+    // Token invalid, stay on login
+    render();
+  });
+} else {
+  render();
+}
+</script>
+</body>
+</html>

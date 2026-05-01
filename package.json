@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "mongoose-memory": "^1.1.2"
+  }
+}
