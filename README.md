@@ -26,32 +26,9 @@ A full-stack team task management application with authentication, role-based ac
 ```
 team-task-manager/
 ├── backend/
-│   ├── config/
-│   │   └── database.js
-│   ├── controllers/
-│   │   ├── authController.js
-│   │   ├── projectController.js
-│   │   ├── taskController.js
-│   │   ├── userController.js
-│   │   └── notificationController.js
-│   ├── middleware/
-│   │   ├── auth.js
-│   │   └── errorHandler.js
-│   ├── models/
-│   │   ├── User.js
-│   │   ├── Project.js
-│   │   ├── Task.js
-│   │   └── Notification.js
-│   ├── routes/
-│   │   ├── auth.js
-│   │   ├── projects.js
-│   │   ├── tasks.js
-│   │   ├── users.js
-│   │   └── notifications.js
-│   ├── .env
-│   ├── package.json
-│   └── server.js
-├── team_task_manager_prototype.html
+│   ├── ... (Node.js API)
+├── frontend/
+│   ├── ... (Vite + React App)
 └── README.md
 ```
 
@@ -98,14 +75,23 @@ The backend will be running on `http://localhost:5001` unless you change `PORT` 
 
 ### Frontend Setup
 
-1. Open `team_task_manager_prototype.html` in a web browser
-
-2. The frontend will automatically connect to the backend API on `http://localhost:5001`
-
-3. Optionally, open the app directly from the backend at:
+1. Navigate to the frontend directory:
    ```bash
-   http://localhost:5001/
+   cd frontend
    ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+The frontend will be running on `http://localhost:5173` (or similar) and is pre-configured to connect to the backend API.
+
 
 ## API Endpoints
 

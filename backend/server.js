@@ -41,7 +41,11 @@ app.use(express.static(process.cwd()));
 
 // Root route
 app.get('/', (req, res) => {
-  res.sendFile(path.join(process.cwd(), 'team_task_manager_prototype.html'));
+  res.json({ 
+    message: 'Team Task Manager API is running',
+    version: '1.0.0',
+    documentation: '/api/health'
+  });
 });
 
 
