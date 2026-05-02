@@ -79,7 +79,7 @@ team-task-manager/
    - Copy the `.env` file and update the values:
    ```
    NODE_ENV=development
-   PORT=5000
+   PORT=5001
    MONGO_URI=mongodb://localhost:27017/team_task_manager
    JWT_SECRET=your_super_secret_jwt_key_here_change_in_production
    JWT_EXPIRE=7d
@@ -94,13 +94,18 @@ team-task-manager/
    npm run dev
    ```
 
-The backend will be running on `http://localhost:5000`
+The backend will be running on `http://localhost:5001` unless you change `PORT` in `.env`
 
 ### Frontend Setup
 
 1. Open `team_task_manager_prototype.html` in a web browser
 
-2. The frontend will automatically connect to the backend API
+2. The frontend will automatically connect to the backend API on `http://localhost:5001`
+
+3. Optionally, open the app directly from the backend at:
+   ```bash
+   http://localhost:5001/
+   ```
 
 ## API Endpoints
 

@@ -110,7 +110,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-siz
 <body>
 <div id="R"></div>
 <script>
-let API_BASE = 'http://localhost:5000/api';
+let API_BASE = 'http://localhost:5001/api';
 let currentUser = null;
 let token = localStorage.getItem('token');
 
@@ -146,13 +146,15 @@ async function apiRequest(endpoint, options = {}) {
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.message || 'API request failed');
+      const errorMsg = data.message || `API error: ${response.status}`;
+      console.error(`[${response.status}] ${endpoint}:`, errorMsg);
+      throw new Error(errorMsg);
     }
 
     return data;
   } catch (error) {
-    console.error('API Error:', error);
-    alert(error.message);
+    console.error('API Error:', error.message);
+    alert(`Error: ${error.message}`);
     throw error;
   }
 }
@@ -357,8 +359,8 @@ async function renderTasks(){
   var ptasks = S.tasks.filter(t => t.pr === proj.id);
   var filtered = S.tf === 'all' ? ptasks : ptasks.filter(t => t.st === S.tf);
   
-  // Load members if not loaded
-  if (S.members.length === 0) {
+  // Load members if not loaded for admins only
+  if (isA && S.members.length === 0) {
     await loadMembers();
   }
   
@@ -467,7 +469,9 @@ function upSt(id, s) {
   }).then(() => {
     // Reload tasks
     loadTasks().then(() => render());
-  }).catch(() => {});
+  }).catch((err) => {
+    console.error('Failed to update task status:', err);
+  });
 }
 
 function delTask(id) {
@@ -476,13 +480,18 @@ function delTask(id) {
       method: 'DELETE'
     }).then(() => {
       loadTasks().then(() => render());
-    }).catch(() => {});
+    }).catch((err) => {
+      console.error('Failed to delete task:', err);
+    });
   }
 }
 
 function addTask(pid) {
   const title = document.getElementById('nt').value.trim();
-  if (!title) return;
+  if (!title) {
+    alert('Please enter a task title');
+    return;
+  }
   
   const assignedTo = document.getElementById('na').value;
   const priority = document.getElementById('npr').value;
@@ -500,12 +509,17 @@ function addTask(pid) {
   }).then(() => {
     S.inf = false;
     loadTasks().then(() => render());
-  }).catch(() => {});
+  }).catch((err) => {
+    console.error('Failed to add task:', err);
+  });
 }
 
 function addProj() {
   const name = document.getElementById('np').value.trim();
-  if (!name) return;
+  if (!name) {
+    alert('Please enter a project name');
+    return;
+  }
   
   const description = document.querySelector('#np').nextElementSibling.value.trim();
   
@@ -515,13 +529,17 @@ function addProj() {
   }).then(() => {
     S.inf = false;
     loadProjects().then(() => render());
-  }).catch(() => {});
+  }).catch((err) => {
+    console.error('Failed to add project:', err);
+  });
 }
 
-function render(){
+async function render(){
   var R=document.getElementById('R');
   var m={login:renderLogin,signup:renderSignup,dashboard:renderDashboard,projects:renderProjects,tasks:renderTasks,team:renderTeam,notifications:renderNotifications,settings:renderSettings};
-  R.innerHTML=(m[S.pg]||renderLogin)()
+  var pageFn = m[S.pg] || renderLogin;
+  var content = pageFn();
+  R.innerHTML = content instanceof Promise ? await content : content;
 }
 
 // Check if user is already logged in
