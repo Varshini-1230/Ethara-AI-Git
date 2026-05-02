@@ -34,10 +34,16 @@ app.use('/api/tasks', require('./routes/tasks'));
 app.use('/api/users', require('./routes/users'));
 app.use('/api/notifications', require('./routes/notifications'));
 
-// Serve the frontend file from the backend
+
+
+// Static files
+app.use(express.static(process.cwd()));
+
+// Root route
 app.get('/', (req, res) => {
-  res.sendFile('team_task_manager_prototype.html', { root: path.join(__dirname, '../') });
+  res.sendFile(path.join(process.cwd(), 'team_task_manager_prototype.html'));
 });
+
 
 // Health check
 app.get('/api/health', (req, res) => {
