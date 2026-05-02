@@ -36,7 +36,7 @@ app.use('/api/notifications', require('./routes/notifications'));
 
 // Serve the frontend file from the backend
 app.get('/', (req, res) => {
-  res.send('Backend is running 🚀');
+  res.sendFile(path.join(__dirname, '../team_task_manager_prototype.html'));
 });
 
 // Health check
